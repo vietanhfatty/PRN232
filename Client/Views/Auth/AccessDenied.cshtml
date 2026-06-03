@@ -1,0 +1,22 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6 text-center">
+        <div class="card card-glass p-5 border-0">
+            <div class="d-inline-block bg-danger bg-opacity-10 text-danger rounded-circle p-4 mb-3 hover-scale">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-shield-slash" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1.093 3.093c-.496.19-.922.516-1.093.847V8c0 3.05 1.5 5.5 3 6.5C4.5 15.5 6 16 8 16c1.657 0 2.97-.331 3.907-.843L1.093 3.093zm1.614-1.614 12.2 12.2-.707.707-1.127-1.127C14.07 12.185 15 9.8 15 8V3.94c0-.33-.427-.656-.922-.846A10.875 10.875 0 0 0 8 2c-1.892 0-3.633.27-4.992.839L1.707.839 1 .132l1.707 1.347zM8 3c-1.46 0-2.825.2-3.957.558l.847.848c.953-.255 2.01-.406 3.11-.406 3.02 0 5.212.838 5.67 2.378l.84-.84c-.812-1.782-3.32-2.538-6.51-2.538z"/>
+                </svg>
+            </div>
+            <h2 class="fw-bold text-danger">Access Denied</h2>
+            <p class="text-secondary mt-2">You do not have permission to view this resource.</p>
+            <div class="mt-4">
+                <a href="javascript:history.back()" class="btn btn-outline-light px-4 py-2 hover-translate me-2">Go Back</a>
+                <a asp-controller="Auth" asp-action="Logout" class="btn btn-primary px-4 py-2 hover-translate">Sign In with a different account</a>
+            </div>
+        </div>
+    </div>
+</div>
