@@ -62,6 +62,7 @@ public class AuthController : Controller
             new Claim(ClaimTypes.Name, session.Username),
             new Claim(ClaimTypes.Role, session.RoleName),
             new Claim("AccountId", session.AccountId.ToString()),
+            new Claim("StaffId", session.StaffId?.ToString() ?? ""),
             new Claim("FullName", session.FullName ?? session.Username),
             new Claim("Email", session.Email ?? "")
         };
@@ -72,6 +73,7 @@ public class AuthController : Controller
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
         HttpContext.Session.SetString("AccountId", session.AccountId.ToString());
+        HttpContext.Session.SetString("StaffId", session.StaffId?.ToString() ?? "");
         HttpContext.Session.SetString("Username", session.Username);
         HttpContext.Session.SetString("RoleName", session.RoleName);
         HttpContext.Session.SetString("FullName", session.FullName ?? session.Username);

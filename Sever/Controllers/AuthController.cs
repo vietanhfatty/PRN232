@@ -52,6 +52,7 @@ public class AuthController : ControllerBase
         var session = new UserSession
         {
             AccountId = account.AccountId,
+            StaffId = staff?.StaffId,
             Username = account.Username,
             RoleName = account.Role?.RoleName ?? "Staff",
             Email = account.Email,

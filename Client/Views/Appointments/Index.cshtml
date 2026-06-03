@@ -5,6 +5,8 @@
     var patients = ViewBag.Patients as IEnumerable<HospitalManagement.DataAccess.Entities.Patient> ?? new List<HospitalManagement.DataAccess.Entities.Patient>();
     var doctors = ViewBag.Doctors as IEnumerable<HospitalManagement.DataAccess.Entities.Staff> ?? new List<HospitalManagement.DataAccess.Entities.Staff>();
     var medicines = ViewBag.Medicines as IEnumerable<HospitalManagement.DataAccess.Entities.Medicine> ?? new List<HospitalManagement.DataAccess.Entities.Medicine>();
+    var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+    var userStaffId = User.FindFirst("StaffId")?.Value;
 }
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
@@ -125,22 +127,42 @@
                             <td class="text-end">
                                 @if (item.Status == "Pending")
                                 {
-                                    <form asp-action="UpdateStatus" asp-route-id="@item.AppointmentId" asp-route-status="Confirmed" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-success btn-sm px-2 py-1 text-white hover-translate me-1">Confirm</button>
-                                    </form>
-                                    <form asp-action="UpdateStatus" asp-route-id="@item.AppointmentId" asp-route-status="Cancelled" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-danger btn-sm px-2 py-1 text-white hover-translate">Cancel</button>
-                                    </form>
+                                    @if (userRole == "Admin" || userRole == "Staff" || (userRole == "Doctor" && item.DoctorId.ToString() == userStaffId))
+                                    {
+                                        <form asp-action="UpdateStatus" asp-route-id="@item.AppointmentId" asp-route-status="Confirmed" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-success btn-sm px-2 py-1 text-white hover-translate me-1">Confirm</button>
+                                        </form>
+                                        <form asp-action="UpdateStatus" asp-route-id="@item.AppointmentId" asp-route-status="Cancelled" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-danger btn-sm px-2 py-1 text-white hover-translate">Cancel</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-secondary small">No Action</span>
+                                    }
                                 }
                                 else if (item.Status == "Confirmed")
                                 {
-                                    <button type="button" class="btn btn-primary btn-sm px-3 py-1 hover-translate me-1"
-                                            onclick="openRecordModal(@item.AppointmentId, '@(item.Patient?.FullName)', '@(item.Doctor?.FullName)')">
-                                        Complete Exam
-                                    </button>
-                                    <form asp-action="UpdateStatus" asp-route-id="@item.AppointmentId" asp-route-status="Cancelled" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-danger btn-sm px-2 py-1 text-white hover-translate">Cancel</button>
-                                    </form>
+                                    var canComplete = userRole == "Admin" || (userRole == "Doctor" && item.DoctorId.ToString() == userStaffId);
+                                    var canCancel = userRole == "Admin" || userRole == "Staff" || (userRole == "Doctor" && item.DoctorId.ToString() == userStaffId);
+
+                                    if (canComplete)
+                                    {
+                                        <button type="button" class="btn btn-primary btn-sm px-3 py-1 hover-translate me-1"
+                                                onclick="openRecordModal(@item.AppointmentId, '@(item.Patient?.FullName)', '@(item.Doctor?.FullName)')">
+                                            Complete Exam
+                                        </button>
+                                    }
+                                    if (canCancel)
+                                    {
+                                        <form asp-action="UpdateStatus" asp-route-id="@item.AppointmentId" asp-route-status="Cancelled" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-danger btn-sm px-2 py-1 text-white hover-translate">Cancel</button>
+                                        </form>
+                                    }
+                                    if (!canComplete && !canCancel)
+                                    {
+                                        <span class="text-secondary small">No Action</span>
+                                    }
                                 }
                                 else if (item.Status == "Completed")
                                 {
