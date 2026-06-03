@@ -1,0 +1,36 @@
+@using System.Security.Claims
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-8 text-center">
+        <div class="d-inline-block bg-primary bg-opacity-10 text-primary rounded-circle p-4 mb-4 hover-scale">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-activity text-primary" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M6 2a.5.5 0 0 1 .47.33L10 12.036l1.53-4.22A.5.5 0 0 1 12 7.5h3.5a.5.5 0 0 1 0 1h-3.15l-1.88 5.17a.5.5 0 0 1-.94-.03L6.5 4.137 5.03 9.35a.5.5 0 0 1-.96-.04L2.5 4.5H.5a.5.5 0 0 1 0-1h2.5a.5.5 0 0 1 .47.33L5 9.036l1.53-4.22A.5.5 0 0 1 6 2z"/>
+            </svg>
+        </div>
+        <h1 class="display-3 fw-bold tracking-tight">Hospital Management System</h1>
+        <p class="lead text-secondary mt-3 mx-auto" style="max-width: 600px;">
+            A state-of-the-art administrative platform designed for managing roles, physician schedules, patient profiles, medical examinations, and drug prescriptions.
+        </p>
+        <div class="mt-4">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
+                if (role == "Admin")
+                {
+                    <a asp-controller="Accounts" asp-action="Index" class="btn btn-primary px-5 py-3 hover-translate">Go to Admin Dashboard</a>
+                }
+                else
+                {
+                    <a asp-controller="Patients" asp-action="Index" class="btn btn-primary px-5 py-3 hover-translate">Go to Staff Dashboard</a>
+                }
+            }
+            else
+            {
+                <a asp-controller="Auth" asp-action="Login" class="btn btn-primary px-5 py-3 hover-translate">Sign In to Dashboard</a>
+            }
+        </div>
+    </div>
+</div>
