@@ -23,6 +23,10 @@ builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
 
 // Configure OData
 builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    })
     .AddOData(options => options
         .Select()
         .Filter()

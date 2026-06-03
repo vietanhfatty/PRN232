@@ -137,7 +137,8 @@ public class AppointmentsController : Controller
         }
         else
         {
-            TempData["Error"] = "Failed to update appointment status.";
+            var content = await response.Content.ReadAsStringAsync();
+            TempData["Error"] = $"Failed to update appointment status. Server returned: {content}";
         }
 
         return RedirectToAction("Index");
