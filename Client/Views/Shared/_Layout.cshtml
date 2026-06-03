@@ -1,0 +1,86 @@
+@using System.Security.Claims
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Hospital Management System</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Client.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark mb-4 py-3">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-heart-pulse-fill text-primary me-2" viewBox="0 0 16 16">
+                        <path d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.886 6.53l-1.5 2.5A.5.5 0 0 1 3.952 9.35H1.475Z"/>
+                        <path d="M.88 8C-2.427 1.68 4.41-2 8 2.5 11.589-2 18.427 1.68 15.12 8h-2.79l-1.202-3.006-1.764 6.177a.5.5 0 0 1-.946.046L6.5 4.848l-1.315 2.192A.5.5 0 0 1 4.75 7.35H.88Z"/>
+                    </svg>
+                    <span>Hospital<span>Management</span></span>
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+                            if (role == "Admin")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Accounts" ? "active" : "")" asp-controller="Accounts" asp-action="Index">Accounts</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Patients" ? "active" : "")" asp-controller="Patients" asp-action="Index">Patients</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Appointments" ? "active" : "")" asp-controller="Appointments" asp-action="Index">Appointments</a>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav align-items-center">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            var fullName = User.FindFirst("FullName")?.Value ?? User.Identity.Name;
+                            var role = User.FindFirst(ClaimTypes.Role)?.Value ?? "Staff";
+                            <li class="nav-item me-3 text-end d-none d-md-block">
+                                <div class="text-white fw-semibold small">@fullName</div>
+                                <div class="text-secondary" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">@role</div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light btn-sm px-3 py-2 hover-translate" asp-controller="Auth" asp-action="Logout">Sign Out</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-primary btn-sm px-4 py-2 hover-translate" asp-controller="Auth" asp-action="Login">Sign In</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container flex-grow-1">
+        <main role="main" class="pb-5">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="text-secondary text-center">
+        <div class="container text-xs">
+            &copy; 2026 - Hospital Management System - Built for ASM-1.
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

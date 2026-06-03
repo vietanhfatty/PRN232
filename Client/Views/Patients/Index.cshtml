@@ -1,0 +1,228 @@
+@model IEnumerable<HospitalManagement.DataAccess.Entities.Patient>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Manage Patients";
+    bool isAdmin = User.IsInRole("Admin");
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h2 class="fw-bold tracking-tight text-white mb-1">Patients Registry</h2>
+        <p class="text-secondary small mb-0">Total Patients: @Model.Count()</p>
+    </div>
+    
+    <div class="d-flex gap-2">
+        <form method="get" asp-action="Index" class="d-flex gap-2">
+            <input type="text" name="search" value="@ViewData["Search"]" class="form-control" style="min-width: 250px;" placeholder="Search by name..." />
+            @if (!string.IsNullOrEmpty(ViewData["Search"]?.ToString()))
+            {
+                <a asp-action="Index" class="btn btn-outline-light d-flex align-items-center">Clear</a>
+            }
+            <button type="submit" class="btn btn-outline-light">Search</button>
+        </form>
+
+        <button type="button" class="btn btn-primary hover-translate d-flex align-items-center" onclick="openCreateModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi xmlns-svg me-2" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 .5-.5z"/>
+            </svg>
+            Add Patient
+        </button>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success bg-success bg-opacity-10 border-success border-opacity-20 text-success text-sm rounded-8 mb-4" role="alert">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger text-sm rounded-8 mb-4" role="alert">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="card card-glass border-0 p-4">
+    <div class="table-responsive">
+        <table class="table table-premium text-white">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Gender</th>
+                    <th>Date Of Birth</th>
+                    <th>Phone Number</th>
+                    <th>Insurance Code</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-secondary py-5">No patients found.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.PatientId</td>
+                            <td class="fw-bold text-white">@item.FullName</td>
+                            <td>@item.Gender</td>
+                            <td>@item.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                            <td>@item.PhoneNumber</td>
+                            <td>
+                                @if (string.IsNullOrEmpty(item.HealthInsuranceCode))
+                                {
+                                    <span class="text-secondary small">N/A</span>
+                                }
+                                else
+                                {
+                                    <code class="text-secondary">@item.HealthInsuranceCode</code>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-outline-light btn-sm px-3 py-2 me-1 hover-translate"
+                                        onclick="openEditModal(@item.PatientId, '@item.FullName', '@item.Gender', '@item.DateOfBirth.ToString("yyyy-MM-dd")', '@item.PhoneNumber', '@item.Address', '@item.HealthInsuranceCode')">
+                                    Edit
+                                </button>
+                                @if (isAdmin)
+                                {
+                                    <button type="button" class="btn btn-danger btn-sm px-3 py-2 text-white hover-translate"
+                                            onclick="openDeleteModal(@item.PatientId, '@item.FullName')">
+                                        Delete
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Save Modal -->
+<div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-white" id="saveModalLabel">Patient Record</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="Save" method="post" id="patientForm">
+                <div class="modal-body text-start">
+                    <input type="hidden" name="PatientId" id="modalPatientId" value="0" />
+
+                    <div class="mb-3">
+                        <label for="modalFullName" class="form-label text-secondary small fw-semibold">Full Name</label>
+                        <input type="text" name="FullName" id="modalFullName" class="form-control" required placeholder="Full Name" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalGender" class="form-label text-secondary small fw-semibold">Gender</label>
+                        <select name="Gender" id="modalGender" class="form-select" required>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalDateOfBirth" class="form-label text-secondary small fw-semibold">Date of Birth</label>
+                        <input type="date" name="DateOfBirth" id="modalDateOfBirth" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalPhoneNumber" class="form-label text-secondary small fw-semibold">Phone Number (10 - 15 digits)</label>
+                        <input type="text" name="PhoneNumber" id="modalPhoneNumber" class="form-control" required placeholder="e.g. 0912345678" pattern="^[0-9]{10,15}$" title="Phone number must be between 10 and 15 digits." />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalAddress" class="form-label text-secondary small fw-semibold">Address</label>
+                        <input type="text" name="Address" id="modalAddress" class="form-control" placeholder="Address" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modalHealthInsuranceCode" class="form-label text-secondary small fw-semibold">Health Insurance Code (Optional)</label>
+                        <input type="text" name="HealthInsuranceCode" id="modalHealthInsuranceCode" class="form-control" placeholder="Health Insurance Code" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Patient</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+@if (isAdmin)
+{
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-danger border-opacity-20">
+                    <h5 class="modal-title text-danger" id="deleteModalLabel">Confirm Patient Deletion</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="Delete" method="post">
+                    <div class="modal-body text-start">
+                        <input type="hidden" name="id" id="deletePatientId" />
+                        <p class="text-white">Are you sure you want to delete patient <strong id="deletePatientName" class="text-primary"></strong>?</p>
+                        <p class="text-secondary small">This will also delete all associated appointments, medical records, and prescriptions for this patient.</p>
+                    </div>
+                    <div class="modal-footer border-danger border-opacity-20">
+                        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        var saveModal = new bootstrap.Modal(document.getElementById('saveModal'));
+        var deleteModalEl = document.getElementById('deleteModal');
+        var deleteModal = deleteModalEl ? new bootstrap.Modal(deleteModalEl) : null;
+
+        function openCreateModal() {
+            document.getElementById('modalPatientId').value = "0";
+            document.getElementById('modalFullName').value = "";
+            document.getElementById('modalGender').value = "Nam";
+            document.getElementById('modalDateOfBirth').value = "";
+            document.getElementById('modalPhoneNumber').value = "";
+            document.getElementById('modalAddress').value = "";
+            document.getElementById('modalHealthInsuranceCode').value = "";
+            document.getElementById('saveModalLabel').innerText = "Register New Patient";
+            saveModal.show();
+        }
+
+        function openEditModal(id, fullName, gender, dob, phoneNumber, address, insuranceCode) {
+            document.getElementById('modalPatientId').value = id;
+            document.getElementById('modalFullName').value = fullName;
+            document.getElementById('modalGender').value = gender;
+            document.getElementById('modalDateOfBirth').value = dob;
+            document.getElementById('modalPhoneNumber').value = phoneNumber;
+            document.getElementById('modalAddress').value = address;
+            document.getElementById('modalHealthInsuranceCode').value = insuranceCode;
+            document.getElementById('saveModalLabel').innerText = "Edit Patient Details";
+            saveModal.show();
+        }
+
+        function openDeleteModal(id, fullName) {
+            if (deleteModal) {
+                document.getElementById('deletePatientId').value = id;
+                document.getElementById('deletePatientName').innerText = fullName;
+                deleteModal.show();
+            }
+        }
+    </script>
+}

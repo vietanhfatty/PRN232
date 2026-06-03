@@ -1,0 +1,549 @@
+@model IEnumerable<HospitalManagement.DataAccess.Entities.Appointment>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Manage Appointments";
+    var patients = ViewBag.Patients as IEnumerable<HospitalManagement.DataAccess.Entities.Patient> ?? new List<HospitalManagement.DataAccess.Entities.Patient>();
+    var doctors = ViewBag.Doctors as IEnumerable<HospitalManagement.DataAccess.Entities.Staff> ?? new List<HospitalManagement.DataAccess.Entities.Staff>();
+    var medicines = ViewBag.Medicines as IEnumerable<HospitalManagement.DataAccess.Entities.Medicine> ?? new List<HospitalManagement.DataAccess.Entities.Medicine>();
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h2 class="fw-bold tracking-tight text-white mb-1">Appointments Dashboard</h2>
+        <p class="text-secondary small mb-0">Total Schedules: @Model.Count()</p>
+    </div>
+    <button type="button" class="btn btn-primary hover-translate d-flex align-items-center" onclick="openCreateModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi xmlns-svg me-2" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 .5-.5z"/>
+        </svg>
+        New Appointment
+    </button>
+</div>
+
+<!-- Filters Panel -->
+<div class="card card-glass border-0 p-4 mb-4">
+    <h6 class="text-white fw-bold mb-3">Filter Appointments</h6>
+    <form method="get" asp-action="Index">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label text-secondary small fw-semibold">From Date</label>
+                <input type="date" name="fromDate" value="@ViewBag.FromDate" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-secondary small fw-semibold">To Date</label>
+                <input type="date" name="toDate" value="@ViewBag.ToDate" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label text-secondary small fw-semibold">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    <!option value="Pending" @(ViewBag.Status == "Pending" ? "selected" : "")>Pending</!option>
+                    <!option value="Confirmed" @(ViewBag.Status == "Confirmed" ? "selected" : "")>Confirmed</!option>
+                    <!option value="Completed" @(ViewBag.Status == "Completed" ? "selected" : "")>Completed</!option>
+                    <!option value="Cancelled" @(ViewBag.Status == "Cancelled" ? "selected" : "")>Cancelled</!option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-secondary small fw-semibold">Keyword Search (Patient or Doctor)</label>
+                <div class="d-flex gap-2">
+                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Name..." />
+                    <button type="submit" class="btn btn-outline-light">Filter</button>
+                    @if (ViewBag.FromDate != null || ViewBag.ToDate != null || ViewBag.Status != null || ViewBag.Search != null)
+                    {
+                        <a asp-action="Index" class="btn btn-outline-danger d-flex align-items-center">Reset</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success bg-success bg-opacity-10 border-success border-opacity-20 text-success text-sm rounded-8 mb-4" role="alert">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger text-sm rounded-8 mb-4" role="alert">
+        @TempData["Error"]
+    </div>
+}
+
+<!-- Appointments List -->
+<div class="card card-glass border-0 p-4">
+    <div class="table-responsive">
+        <table class="table table-premium text-white">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Patient Name</th>
+                    <th>Doctor Name</th>
+                    <th>Date & Time</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-secondary py-5">No appointments scheduled matching filters.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.AppointmentId</td>
+                            <td class="fw-bold text-white">@(item.Patient?.FullName ?? "N/A")</td>
+                            <td>@(item.Doctor?.FullName ?? "N/A")</td>
+                            <td class="small text-secondary">@item.AppointmentDate.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td class="text-secondary small" style="max-width: 200px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">@item.Reason</td>
+                            <td>
+                                @if (item.Status == "Pending")
+                                {
+                                    <span class="badge badge-status badge-pending">Pending</span>
+                                }
+                                else if (item.Status == "Confirmed")
+                                {
+                                    <span class="badge badge-status badge-confirmed">Confirmed</span>
+                                }
+                                else if (item.Status == "Completed")
+                                {
+                                    <span class="badge badge-status badge-completed">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-status badge-cancelled">@item.Status</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                @if (item.Status == "Pending")
+                                {
+                                    <form asp-action="UpdateStatus" asp-route-id="@item.AppointmentId" asp-route-status="Confirmed" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-success btn-sm px-2 py-1 text-white hover-translate me-1">Confirm</button>
+                                    </form>
+                                    <form asp-action="UpdateStatus" asp-route-id="@item.AppointmentId" asp-route-status="Cancelled" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-danger btn-sm px-2 py-1 text-white hover-translate">Cancel</button>
+                                    </form>
+                                }
+                                else if (item.Status == "Confirmed")
+                                {
+                                    <button type="button" class="btn btn-primary btn-sm px-3 py-1 hover-translate me-1"
+                                            onclick="openRecordModal(@item.AppointmentId, '@(item.Patient?.FullName)', '@(item.Doctor?.FullName)')">
+                                        Complete Exam
+                                    </button>
+                                    <form asp-action="UpdateStatus" asp-route-id="@item.AppointmentId" asp-route-status="Cancelled" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-danger btn-sm px-2 py-1 text-white hover-translate">Cancel</button>
+                                    </form>
+                                }
+                                else if (item.Status == "Completed")
+                                {
+                                    <button type="button" class="btn btn-outline-light btn-sm px-3 py-1 hover-translate"
+                                            onclick="viewMedicalRecord(@item.AppointmentId)">
+                                        View Record
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Create Appointment Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-white" id="createModalLabel">Schedule Appointment</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="Save" method="post">
+                <div class="modal-body text-start">
+                    <input type="hidden" name="AppointmentId" value="0" />
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Patient</label>
+                        <select name="PatientId" class="form-select" required>
+                            <option value="">-- Select Patient --</option>
+                            @foreach (var p in patients)
+                            {
+                                <option value="@p.PatientId">@p.FullName (@p.PhoneNumber)</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Doctor (Physician)</label>
+                        <select name="DoctorId" class="form-select" required>
+                            <option value="">-- Select Doctor --</option>
+                            @foreach (var d in doctors)
+                            {
+                                <option value="@d.StaffId">@d.FullName (@(d.Specialization ?? "General"))</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Appointment Date & Time</label>
+                        <input type="datetime-local" name="AppointmentDate" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Reason for Visit</label>
+                        <textarea name="Reason" class="form-control" rows="3" placeholder="Symptoms, checkup type, etc."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Complete Exam / Medical Record Modal -->
+<div class="modal fade" id="recordModal" tabindex="-1" aria-labelledby="recordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-white" id="recordModalLabel">Add Medical Record & Prescriptions</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-start">
+                <input type="hidden" id="recordAppointmentId" />
+                
+                <div class="row mb-3 text-secondary small">
+                    <div class="col-md-6">
+                        <strong>Patient:</strong> <span class="text-white" id="recordPatientName"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Doctor:</strong> <span class="text-white" id="recordDoctorName"></span>
+                    </div>
+                </div>
+
+                <hr class="border-secondary border-opacity-10 my-3" />
+
+                <div class="mb-3">
+                    <label for="recordDiagnosis" class="form-label text-secondary small fw-semibold">Diagnosis (Chẩn đoán bệnh) *</label>
+                    <input type="text" id="recordDiagnosis" class="form-control" placeholder="e.g. Viêm họng cấp tính" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="recordTreatmentPlan" class="form-label text-secondary small fw-semibold">Treatment Plan (Hướng điều trị)</label>
+                    <textarea id="recordTreatmentPlan" class="form-control" rows="2" placeholder="e.g. Uống thuốc đều đặn, nghỉ ngơi 3 ngày..."></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="recordDoctorNotes" class="form-label text-secondary small fw-semibold">Doctor Notes</label>
+                    <input type="text" id="recordDoctorNotes" class="form-control" placeholder="Ghi chú thêm..." />
+                </div>
+
+                <h6 class="text-white fw-bold mt-4 mb-3">Prescribe Medicines (Đơn thuốc)</h6>
+                <div class="row g-2 align-items-end mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label text-secondary small">Medicine</label>
+                        <select id="prescMedicine" class="form-select">
+                            <option value="">-- Choose Medicine --</option>
+                            @foreach (var med in medicines)
+                            {
+                                <option value="@med.MedicineId" data-name="@med.MedicineName" data-unit="@med.Unit" data-price="@med.Price">
+                                    @med.MedicineName (@med.Unit) - $@med.Price
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label text-secondary small">Quantity</label>
+                        <input type="number" id="prescQuantity" class="form-control" min="1" value="1" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-secondary small">Dosage / Instructions</label>
+                        <input type="text" id="prescDosage" class="form-control" placeholder="e.g. Ngày 2 lần, mỗi lần 1 viên sau ăn" />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-light w-100 py-2" onclick="addPrescriptionItem()">Add</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered border-secondary border-opacity-10 text-white small" id="prescriptionsTable">
+                        <thead>
+                            <tr class="text-secondary">
+                                <th>Medicine</th>
+                                <th class="text-center">Quantity</th>
+                                <th>Dosage</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prescriptionsBody">
+                            <tr id="emptyPrescriptionsRow">
+                                <td colspan="4" class="text-center text-secondary py-3">No medicines prescribed yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="submitMedicalRecord()">Save & Complete Exam</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Medical Record Modal -->
+<div class="modal fade" id="viewRecordModal" tabindex="-1" aria-labelledby="viewRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-primary border-opacity-20">
+                <h5 class="modal-title text-white" id="viewRecordModalLabel">Medical Examination File</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-start" id="viewRecordContent">
+                <!-- Loaded dynamically via AJAX -->
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-primary border-opacity-20">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var createModal = new bootstrap.Modal(document.getElementById('createModal'));
+        var recordModal = new bootstrap.Modal(document.getElementById('recordModal'));
+        var viewRecordModal = new bootstrap.Modal(document.getElementById('viewRecordModal'));
+
+        // Prescriptions array for dynamic record creation
+        var prescribedItems = [];
+
+        function openCreateModal() {
+            createModal.show();
+        }
+
+        function openRecordModal(appointmentId, patientName, doctorName) {
+            document.getElementById('recordAppointmentId').value = appointmentId;
+            document.getElementById('recordPatientName').innerText = patientName || 'N/A';
+            document.getElementById('recordDoctorName').innerText = doctorName || 'N/A';
+            document.getElementById('recordDiagnosis').value = "";
+            document.getElementById('recordTreatmentPlan').value = "";
+            document.getElementById('recordDoctorNotes').value = "";
+            
+            // Clear prescriptions table
+            prescribedItems = [];
+            renderPrescriptionsTable();
+            
+            recordModal.show();
+        }
+
+        function addPrescriptionItem() {
+            var medSelect = document.getElementById('prescMedicine');
+            var medId = medSelect.value;
+            if (!medId) {
+                alert("Please select a medicine.");
+                return;
+            }
+
+            var qtyInput = document.getElementById('prescQuantity');
+            var qty = parseInt(qtyInput.value);
+            if (isNaN(qty) || qty <= 0) {
+                alert("Quantity must be greater than 0.");
+                return;
+            }
+
+            var dosage = document.getElementById('prescDosage').value.trim();
+            if (!dosage) {
+                alert("Dosage instructions are required.");
+                return;
+            }
+
+            var selectedOption = medSelect.options[medSelect.selectedIndex];
+            var name = selectedOption.getAttribute('data-name');
+            var unit = selectedOption.getAttribute('data-unit');
+
+            // Add to array
+            prescribedItems.push({
+                medicineId: parseInt(medId),
+                medicineName: name,
+                unit: unit,
+                quantity: qty,
+                dosage: dosage
+            });
+
+            // Clear inputs
+            medSelect.value = "";
+            qtyInput.value = "1";
+            document.getElementById('prescDosage').value = "";
+
+            renderPrescriptionsTable();
+        }
+
+        function removePrescriptionItem(index) {
+            prescribedItems.splice(index, 1);
+            renderPrescriptionsTable();
+        }
+
+        function renderPrescriptionsTable() {
+            var tbody = document.getElementById('prescriptionsBody');
+            tbody.innerHTML = "";
+
+            if (prescribedItems.length === 0) {
+                tbody.innerHTML = `
+                    <tr id="emptyPrescriptionsRow">
+                        <td colspan="4" class="text-center text-secondary py-3">No medicines prescribed yet.</td>
+                    </tr>`;
+                return;
+            }
+
+            prescribedItems.forEach((item, index) => {
+                var row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.medicineName} (${item.unit})</td>
+                    <td class="text-center font-monospace">${item.quantity}</td>
+                    <td class="text-secondary">${item.dosage}</td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-outline-danger btn-sm py-1 px-2" onclick="removePrescriptionItem(${index})">Remove</button>
+                    </td>`;
+                tbody.appendChild(row);
+            });
+        }
+
+        function submitMedicalRecord() {
+            var appointmentId = parseInt(document.getElementById('recordAppointmentId').value);
+            var diagnosis = document.getElementById('recordDiagnosis').value.trim();
+            var treatmentPlan = document.getElementById('recordTreatmentPlan').value.trim();
+            var doctorNotes = document.getElementById('recordDoctorNotes').value.trim();
+
+            if (!diagnosis) {
+                alert("Diagnosis is required.");
+                return;
+            }
+
+            var data = {
+                appointmentId: appointmentId,
+                diagnosis: diagnosis,
+                treatmentPlan: treatmentPlan,
+                doctorNotes: doctorNotes,
+                prescriptions: prescribedItems.map(item => ({
+                    medicineId: item.medicineId,
+                    quantity: item.quantity,
+                    dosage: item.dosage
+                }))
+            };
+
+            // Post via AJAX
+            fetch('/Appointments/CreateMedicalRecord', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    recordModal.hide();
+                    location.reload();
+                } else {
+                    return response.json().then(err => { throw err; });
+                }
+            })
+            .catch(error => {
+                alert("Error saving medical record: " + (error.message || "Unknown error occurred."));
+            });
+        }
+
+        // View medical record AJAX load
+        function viewMedicalRecord(appointmentId) {
+            var contentDiv = document.getElementById('viewRecordContent');
+            contentDiv.innerHTML = `
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>`;
+            viewRecordModal.show();
+
+            // Load OData record
+            var apiUrl = "https://localhost:7007/odata/MedicalRecords?$filter=AppointmentId eq " + appointmentId + "&$expand=Prescriptions($expand=Medicine)";
+            
+            fetch(apiUrl)
+            .then(res => res.json())
+            .then(data => {
+                if (!data || !data.value || data.value.length === 0) {
+                    contentDiv.innerHTML = `<div class="alert alert-warning">Medical record not found for this appointment.</div>`;
+                    return;
+                }
+                var record = data.value[0];
+                var dateFormatted = new Date(record.UpdatedAt).toLocaleString();
+                
+                var prescriptionsHtml = "";
+                if (record.Prescriptions && record.Prescriptions.length > 0) {
+                    prescriptionsHtml = `
+                        <h6 class="text-white fw-bold mt-4">Prescribed Medicines</h6>
+                        <table class="table table-bordered border-secondary border-opacity-10 text-white small mt-2">
+                            <thead>
+                                <tr class="text-secondary">
+                                    <th>Medicine</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Dosage / Instructions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${record.Prescriptions.map(p => `
+                                    <tr>
+                                        <td>${p.Medicine ? p.Medicine.MedicineName : 'N/A'}</td>
+                                        <td class="font-monospace">${p.Quantity}</td>
+                                        <td class="text-secondary">${p.Medicine ? p.Medicine.Unit : 'N/A'}</td>
+                                        <td class="text-secondary">${p.Dosage}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    prescriptionsHtml = `<p class="text-secondary small mt-3">No medicines were prescribed.</p>`;
+                }
+
+                contentDiv.innerHTML = `
+                    <div class="mb-3">
+                        <strong class="text-secondary small">Examination Date & Time:</strong>
+                        <div class="text-white mt-1">${dateFormatted}</div>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-secondary small">Diagnosis (Chẩn đoán):</strong>
+                        <div class="text-white mt-1 fw-semibold text-primary" style="font-size: 1.1rem;">${record.Diagnosis}</div>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-secondary small">Treatment Plan (Hướng điều trị):</strong>
+                        <div class="text-white mt-1">${record.TreatmentPlan || 'N/A'}</div>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-secondary small">Doctor Notes:</strong>
+                        <div class="text-white mt-1">${record.DoctorNotes || 'N/A'}</div>
+                    </div>
+                    ${prescriptionsHtml}
+                `;
+            })
+            .catch(err => {
+                contentDiv.innerHTML = `<div class="alert alert-danger">Error loading record: ${err.message || err}</div>`;
+            });
+        }
+    </script>
+}
