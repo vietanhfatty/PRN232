@@ -7,21 +7,21 @@ public partial class Appointment
 {
     public int AppointmentId { get; set; }
 
-    public int? PatientId { get; set; }
+    public int PatientId { get; set; }
 
-    public int? DoctorId { get; set; }
+    public int DoctorId { get; set; }
 
     public DateTime AppointmentDate { get; set; }
 
-    public string? Reason { get; set; }
+    public string? Type { get; set; }
 
     public string? Status { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public string? Reason { get; set; }
 
-    public virtual Staff? Doctor { get; set; }
+    public int? QueueNumber { get; set; }
 
-    public virtual MedicalRecord? MedicalRecord { get; set; }
+    public virtual Staff Doctor { get; set; } = null!;
 
-    public virtual Patient? Patient { get; set; }
+    public virtual Patient Patient { get; set; } = null!;
 }

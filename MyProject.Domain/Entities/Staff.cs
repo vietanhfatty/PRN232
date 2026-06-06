@@ -7,23 +7,27 @@ public partial class Staff
 {
     public int StaffId { get; set; }
 
-    public string FullName { get; set; } = null!;
+    public int RoleId { get; set; }
 
-    public string? Gender { get; set; }
+    public string FirstName { get; set; } = null!;
 
-    public DateOnly? DateOfBirth { get; set; }
-
-    public string? PhoneNumber { get; set; }
-
-    public string? Address { get; set; }
+    public string LastName { get; set; } = null!;
 
     public string? Specialization { get; set; }
 
-    public string? Position { get; set; }
+    public string Phone { get; set; } = null!;
 
-    public int? AccountId { get; set; }
+    public string? Email { get; set; }
 
-    public virtual Account? Account { get; set; }
+    public string? Status { get; set; }
+
+    public virtual ICollection<AdmissionOrder> AdmissionOrders { get; set; } = new List<AdmissionOrder>();
 
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+
+    public virtual ICollection<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
+
+    public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
+
+    public virtual Role Role { get; set; } = null!;
 }

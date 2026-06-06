@@ -12,3 +12,4 @@ D:\PRN212_demo\232\Project_PRN232\MyProject.Domain\obj\Debug\net8.0\ref\MyProjec
 D:\PRN212_demo\232\Project_PRN232\MyProject.Domain\bin\Debug\net8.0\MyProject.Domain.runtimeconfig.json
 D:\PRN212_demo\232\Project_PRN232\MyProject.Domain\obj\Debug\net8.0\MyProject.Domain.csproj.AssemblyReference.cache
 D:\PRN212_demo\232\Project_PRN232\MyProject.Domain\obj\Debug\net8.0\MyProject.Domain.genruntimeconfig.cache
+D:\PRN212_demo\232\Project_PRN232\MyProject.Domain\obj\Debug\net8.0\MyProject.Domain.sourcelink.json

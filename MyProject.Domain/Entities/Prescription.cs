@@ -7,15 +7,15 @@ public partial class Prescription
 {
     public int PrescriptionId { get; set; }
 
-    public int? RecordId { get; set; }
+    public int RecordId { get; set; }
 
-    public int? MedicineId { get; set; }
+    public DateTime CreatedAt { get; set; }
 
-    public int Quantity { get; set; }
+    public bool? IsDispensed { get; set; }
 
-    public string Dosage { get; set; } = null!;
+    public DateTime? DispensedAt { get; set; }
 
-    public virtual Medicine? Medicine { get; set; }
+    public virtual ICollection<PrescriptionDetail> PrescriptionDetails { get; set; } = new List<PrescriptionDetail>();
 
-    public virtual MedicalRecord? Record { get; set; }
+    public virtual MedicalRecord Record { get; set; } = null!;
 }

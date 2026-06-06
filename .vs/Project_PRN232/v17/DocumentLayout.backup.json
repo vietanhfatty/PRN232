@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "D:\\PRN212_demo\\232\\Project_PRN232\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{560F609B-B813-4301-8D09-3A77D1BA3D05}|MyProject.Infrastructure\\MyProject.Infrastructure.csproj|d:\\prn212_demo\\232\\project_prn232\\myproject.infrastructure\\hospitalmanagementdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{560F609B-B813-4301-8D09-3A77D1BA3D05}|MyProject.Infrastructure\\MyProject.Infrastructure.csproj|solutionrelative:myproject.infrastructure\\hospitalmanagementdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F174309E-0F06-4158-9CB5-83B740796DFF}|MyProject.Domain\\MyProject.Domain.csproj|d:\\prn212_demo\\232\\project_prn232\\myproject.domain\\myproject.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{F174309E-0F06-4158-9CB5-83B740796DFF}|MyProject.Domain\\MyProject.Domain.csproj|solutionrelative:myproject.domain\\myproject.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{560F609B-B813-4301-8D09-3A77D1BA3D05}|MyProject.Infrastructure\\MyProject.Infrastructure.csproj|d:\\prn212_demo\\232\\project_prn232\\myproject.infrastructure\\hospitalmanagementdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{560F609B-B813-4301-8D09-3A77D1BA3D05}|MyProject.Infrastructure\\MyProject.Infrastructure.csproj|solutionrelative:myproject.infrastructure\\hospitalmanagementdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B23BB947-626F-4F9F-9BFD-F40DB14DF837}|MyProject.Application\\MyProject.Application.csproj|d:\\prn212_demo\\232\\project_prn232\\myproject.application\\myproject.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
@@ -30,7 +30,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "MyProject.Domain",
               "DocumentMoniker": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Domain\\MyProject.Domain.csproj",
               "RelativeDocumentMoniker": "MyProject.Domain\\MyProject.Domain.csproj",
@@ -909,7 +909,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "HospitalManagementDbContext.cs",
               "DocumentMoniker": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Infrastructure\\HospitalManagementDbContext.cs",
               "RelativeDocumentMoniker": "MyProject.Infrastructure\\HospitalManagementDbContext.cs",
