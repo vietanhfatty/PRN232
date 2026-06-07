@@ -13,13 +13,13 @@ public partial class Appointment
 
     public DateTime AppointmentDate { get; set; }
 
+    public int? QueueNumber { get; set; }
+
     public string? Type { get; set; }
 
     public string? Status { get; set; }
 
     public string? Reason { get; set; }
-
-    public int? QueueNumber { get; set; }
 
     public virtual Staff Doctor { get; set; } = null!;
 

@@ -4,16 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MyProject.Domain.Entities;
 
-public partial class HospitalManagementContext : DbContext
+public partial class HospitalManagementDbContext : DbContext
 {
-    public HospitalManagementContext()
+    public HospitalManagementDbContext()
     {
     }
 
-    public HospitalManagementContext(DbContextOptions<HospitalManagementContext> options)
+    public HospitalManagementDbContext(DbContextOptions<HospitalManagementDbContext> options)
         : base(options)
     {
     }
+
+    public virtual DbSet<Account> Accounts { get; set; }
 
     public virtual DbSet<AdmissionOrder> AdmissionOrders { get; set; }
 
@@ -53,10 +55,48 @@ public partial class HospitalManagementContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server= VIETANHFATTY\\SQLEXPRESS;uid=sa;password=1234567890;database=HospitalManagement;Encrypt=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server= VIETANHFATTY\\SQLEXPRESS;uid=sa;password=1234567890;database=HospitalManagementDB;Encrypt=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Account>(entity =>
+        {
+            entity.ToTable("accounts");
+
+            entity.HasIndex(e => e.StaffId, "UC_accounts_staff").IsUnique();
+
+            entity.HasIndex(e => e.Username, "UC_accounts_username").IsUnique();
+
+            entity.Property(e => e.AccountId).HasColumnName("account_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
+            entity.Property(e => e.PasswordHash)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("password_hash");
+            entity.Property(e => e.RoleId).HasColumnName("role_id");
+            entity.Property(e => e.StaffId).HasColumnName("staff_id");
+            entity.Property(e => e.Username)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("username");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_accounts_roles");
+
+            entity.HasOne(d => d.Staff).WithOne(p => p.Account)
+                .HasForeignKey<Account>(d => d.StaffId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_accounts_staffs");
+        });
+
         modelBuilder.Entity<AdmissionOrder>(entity =>
         {
             entity.HasKey(e => e.OrderId);
@@ -512,7 +552,6 @@ public partial class HospitalManagementContext : DbContext
                 .HasMaxLength(15)
                 .IsUnicode(false)
                 .HasColumnName("phone");
-            entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.Specialization)
                 .HasMaxLength(100)
                 .HasColumnName("specialization");
@@ -520,11 +559,6 @@ public partial class HospitalManagementContext : DbContext
                 .HasMaxLength(20)
                 .HasDefaultValue("Active")
                 .HasColumnName("status");
-
-            entity.HasOne(d => d.Role).WithMany(p => p.Staff)
-                .HasForeignKey(d => d.RoleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_staffs_roles");
         });
 
         OnModelCreatingPartial(modelBuilder);

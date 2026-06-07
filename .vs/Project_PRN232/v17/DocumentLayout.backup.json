@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\PRN212_demo\\232\\Project_PRN232\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F174309E-0F06-4158-9CB5-83B740796DFF}|MyProject.Domain\\MyProject.Domain.csproj|d:\\prn212_demo\\232\\project_prn232\\myproject.domain\\entities\\roomallocation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F174309E-0F06-4158-9CB5-83B740796DFF}|MyProject.Domain\\MyProject.Domain.csproj|solutionrelative:myproject.domain\\entities\\roomallocation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F174309E-0F06-4158-9CB5-83B740796DFF}|MyProject.Domain\\MyProject.Domain.csproj|d:\\prn212_demo\\232\\project_prn232\\myproject.domain\\myproject.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{F174309E-0F06-4158-9CB5-83B740796DFF}|MyProject.Domain\\MyProject.Domain.csproj|solutionrelative:myproject.domain\\myproject.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
@@ -26,34 +30,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 623,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 51,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MyProject.Domain",
-              "DocumentMoniker": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Domain\\MyProject.Domain.csproj",
-              "RelativeDocumentMoniker": "MyProject.Domain\\MyProject.Domain.csproj",
-              "ToolTip": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Domain\\MyProject.Domain.csproj",
-              "RelativeToolTip": "MyProject.Domain\\MyProject.Domain.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-06-05T03:25:01.67Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MyProject.Application",
-              "DocumentMoniker": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Application\\MyProject.Application.csproj",
-              "RelativeDocumentMoniker": "MyProject.Application\\MyProject.Application.csproj",
-              "ToolTip": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Application\\MyProject.Application.csproj",
-              "RelativeToolTip": "MyProject.Application\\MyProject.Application.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-06-05T03:27:05.875Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:1:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
@@ -257,6 +235,19 @@
             {
               "$type": "Bookmark",
               "Name": "ST:41:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RoomAllocation.cs",
+              "DocumentMoniker": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Domain\\Entities\\RoomAllocation.cs",
+              "RelativeDocumentMoniker": "MyProject.Domain\\Entities\\RoomAllocation.cs",
+              "ToolTip": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Domain\\Entities\\RoomAllocation.cs",
+              "RelativeToolTip": "MyProject.Domain\\Entities\\RoomAllocation.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-06T07:35:28.853Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
@@ -832,7 +823,33 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MyProject.Domain.csproj",
+              "DocumentMoniker": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Domain\\MyProject.Domain.csproj",
+              "RelativeDocumentMoniker": "MyProject.Domain\\MyProject.Domain.csproj",
+              "ToolTip": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Domain\\MyProject.Domain.csproj",
+              "RelativeToolTip": "MyProject.Domain\\MyProject.Domain.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-06-05T03:25:01.67Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "MyProject.Application.csproj",
+              "DocumentMoniker": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Application\\MyProject.Application.csproj",
+              "RelativeDocumentMoniker": "MyProject.Application\\MyProject.Application.csproj",
+              "ToolTip": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Application\\MyProject.Application.csproj",
+              "RelativeToolTip": "MyProject.Application\\MyProject.Application.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-06-05T03:27:05.875Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Class1.cs",
               "DocumentMoniker": "D:\\PRN212_demo\\232\\Project_PRN232\\asd\\Class1.cs",
               "RelativeDocumentMoniker": "asd\\Class1.cs",
@@ -840,8 +857,7 @@
               "RelativeToolTip": "asd\\Class1.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-05T01:45:09.403Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-05T01:45:09.403Z"
             }
           ]
         },
@@ -905,21 +921,8 @@
         },
         {
           "DockedWidth": 881,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 24,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "HospitalManagementDbContext.cs",
-              "DocumentMoniker": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Infrastructure\\HospitalManagementDbContext.cs",
-              "RelativeDocumentMoniker": "MyProject.Infrastructure\\HospitalManagementDbContext.cs",
-              "ToolTip": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Infrastructure\\HospitalManagementDbContext.cs",
-              "RelativeToolTip": "MyProject.Infrastructure\\HospitalManagementDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-05T04:23:38.404Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:43:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
@@ -1017,8 +1020,17 @@
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:28:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "HospitalManagementDbContext.cs",
+              "DocumentMoniker": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Infrastructure\\HospitalManagementDbContext.cs",
+              "RelativeDocumentMoniker": "MyProject.Infrastructure\\HospitalManagementDbContext.cs",
+              "ToolTip": "D:\\PRN212_demo\\232\\Project_PRN232\\MyProject.Infrastructure\\HospitalManagementDbContext.cs",
+              "RelativeToolTip": "MyProject.Infrastructure\\HospitalManagementDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-05T04:23:38.404Z",
+              "EditorCaption": ""
             }
           ]
         }
